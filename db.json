@@ -1,6 +1,28 @@
 {
-    "siswa": [],
-    "guru": [],
-    "karyawan": []
-  }
-  
+  "guru": [
+    {
+      "id": "5cf7",
+      "nama": "33233",
+      "alamat": "332323",
+      "nomorhp": "3332323"
+    }
+  ],
+  "siswa": [
+    {
+      "id": "10ec",
+      "nama": "xxsds",
+      "kelas": "ss",
+      "jurusan": "sssss",
+      "alamat": "ssss",
+      "nomorhp": "123232323"
+    }
+  ],
+  "karyawan": [
+    {
+      "id": "d605",
+      "nama": "3213213",
+      "alamat": "23232323",
+      "nomorhp": "323232323"
+    }
+  ]
+}
