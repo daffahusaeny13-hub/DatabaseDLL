@@ -5,168 +5,104 @@ import Sidnav from "./Sidnav";
 const Database = () => {
   const [tipe, setTipe] = useState("Siswa");
   const [data, setData] = useState([]);
-  const [form, setForm] = useState({ nama: "", kelas: "", jurusan: "", jabatan: "", nomorhp: "" });
-  const API_URL = "http://localhost:5174";
+  const [form, setForm] = useState({ nama: "", kelas: "", jurusan: "", alamat: "", nomorhp: "", });
+  const API = "http://localhost:5174";
 
   useEffect(() => {
-    fetchData();
+    ambilData();
   }, [tipe]);
 
-  const fetchData = async () => {
+  const ambilData = async () => {
     try {
-      const res = await fetch(`${API_URL}/${tipe.toLowerCase()}`);
+      const res = await fetch(`${API}/${tipe.toLowerCase()}`);
       const result = await res.json();
       setData(result);
     } catch (err) {
-      console.error("Error ambil data:", err);
+      console.error("Gagal ambil data:", err);
     }
   };
 
-  const handleSubmit = async (e) => {
+  const tambahData = async (e) => {
     e.preventDefault();
 
-    const newData =
+    const baru =
       tipe === "Siswa"
-        ? { nama: form.nama, kelas: form.kelas, jurusan: form.jurusan, alamat: form.alamat, nomorhp: form.nomorhp }
-        : tipe === "Guru"
-        ? { nama: form.nama, alamat: form.alamat, nomorhp: form.nomorhp }
-        : { nama: form.nama, alamat: form.alamat, nomorhp: form.nomorhp };
+        ? { nama: form.nama, kelas: form.kelas, jurusan: form.jurusan, nomorhp: form.nomorhp, }
+        : { nama: form.nama, alamat: form.alamat, nomorhp: form.nomorhp, };
 
-    try {
-      await fetch(`${API_URL}/${tipe.toLowerCase()}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newData),
-      });
-
-      Swal.fire({
-        icon: "success",
-        title: "Berhasil!",
-        text: `Data ${tipe.toLowerCase()} berhasil ditambahkan!`,
-        confirmButtonColor: "#3B82F6",
-      });
-
-      setForm({ nama: "", kelas: "", jurusan: "", alamat: "", nomorhp: "" });
-      await fetchData();
-    } catch (err) {
-      console.error("Error tambah data:", err);
-    }
-  };
-
-  const handleDelete = async (id) => {
-    const result = await Swal.fire({
-      title: "Yakin ingin menghapus?",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Ya, hapus!",
-      cancelButtonText: "Batal",
-      confirmButtonColor: "#EF4444",
+    await fetch(`${API}/${tipe.toLowerCase()}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(baru),
     });
 
-    if (result.isConfirmed) {
-      await fetch(`${API_URL}/${tipe.toLowerCase()}/${id}`, { method: "DELETE" });
-      setData(data.filter((item) => item.id !== id));
-      Swal.fire("Terhapus!", "Data berhasil dihapus.", "success");
-    }
+    Swal.fire("Berhasil!", `Data ${tipe} ditambah.`, "success");
+    setForm({ nama: "", kelas: "", jurusan: "", alamat: "", nomorhp: "" });
+    ambilData();
   };
 
-  const handleNoHpChange = (e) => {
-    const angka = e.target.value.replace(/\D/g, "");
-    if (angka.length <= 13) setForm({ ...form, nomorhp: angka });
+  const hapusData = async (id) => {
+    await fetch(`${API}/${tipe.toLowerCase()}/${id}`, { method: "DELETE" });
+    Swal.fire("Terhapus!", "Data berhasil dihapus.", "success");
+    ambilData();
   };
 
   return (
     <div className="flex min-h-screen bg-gray-100">
       <Sidnav />
-  
-      <div className="flex-1 flex flex-col items-center py-10 px-4 ml-60">
-        <h1 className="text-4xl font-bold mb-6">Database</h1>
-  
 
-        <div className="flex gap-2 mb-6">
-          <select
-            value={tipe}
-            onChange={(e) => setTipe(e.target.value)}
-            className="bg-black text-white px-3 py-1 rounded"
-          >
-            <option value="Siswa">Siswa</option>
-            <option value="Guru">Guru</option>
-            <option value="Karyawan">Karyawan</option>
-          </select>
-        </div>
+      <div className="flex-1 py-10 px-4 ml-60 text-center">
+        <h1 className="text-3xl font-bold text-blue-600 mb-4">Database {tipe}</h1>
 
-        <table className="border text-center bg-white shadow-md rounded w-full max-w-4xl mb-10">
+        <select
+          value={tipe}
+          onChange={(e) => setTipe(e.target.value)}
+          className="border p-2 rounded mb-4"
+        >
+          <option>Siswa</option>
+          <option>Guru</option>
+          <option>Karyawan</option>
+        </select>
+
+        <table className="w-full max-w-4xl mx-auto border mb-6 bg-white">
           <thead className="bg-gray-200">
             <tr>
-              <th className="border px-3 py-1">No</th>
-              <th className="border px-3 py-1">Nama</th>
-
+              <th>No</th>
+              <th>Nama</th>
               {tipe === "Siswa" && (
                 <>
-                  <th className="border px-3 py-1">Kelas</th>
-                  <th className="border px-3 py-1">Jurusan</th>
-                  <th className="border px-3 py-1">Alamat</th>
-                  <th className="border px-3 py-1">Nomor HP</th>
+                  <th>Kelas</th>
+                  <th>Jurusan</th>
                 </>
               )}
-
-              {tipe === "Guru" && (
-                <>
-                <th className="border px-3 py-1">Alamat</th>
-                <th className="border px-3 py-1">Nomor HP</th>
-                </>
-              )}
-
-              {tipe === "Karyawan" && (
-                <>
-                <th className="border px-3 py-1">Nomor HP</th>
-                <th className="border px-3 py-1">Alamat</th>
-                </>
-              )}
-
-              <th className="border px-3 py-1">Aksi</th>
+              {tipe !== "Siswa" && <th>Alamat</th>}
+              <th>Nomor HP</th>
+              <th>Aksi</th>
             </tr>
           </thead>
-
           <tbody>
             {data.length === 0 ? (
               <tr>
-                <td colSpan="6" className="border py-2">
+                <td colSpan="6" className="py-2">
                   Tidak ada data
                 </td>
               </tr>
             ) : (
-              data.map((item, index) => (
-                <tr key={item.id}>
-                  <td className="border px-3 py-1">{index + 1}</td>
-                  <td className="border px-3 py-1">{item.nama}</td>
-
+              data.map((x, i) => (
+                <tr key={x.id}>
+                  <td>{i + 1}</td>
+                  <td>{x.nama}</td>
                   {tipe === "Siswa" && (
                     <>
-                      <td className="border px-3 py-1">{item.kelas}</td>
-                      <td className="border px-3 py-1">{item.jurusan}</td>
-                      <td className="border px-3 py-1">{item.alamat}</td>
-                      <td className="border px-3 py-1">{item.nomorhp || "-"}</td>
+                      <td>{x.kelas}</td>
+                      <td>{x.jurusan}</td>
                     </>
                   )}
-
-                  {tipe === "Guru" && (
-                    <>
-                    <td className="border px-3 py-1">{item.alamat}</td>
-                    <td className="border px-3 py-1">{item.nomorhp || "-"}</td>
-                    </>
-                  )}
-
-                  {tipe === "Karyawan" && (
-                    <>
-                    <td className="border px-3 py-1">{item.alamat}</td>
-                    <td className="border px-3 py-1">{item.nomorhp || "-"}</td>
-                    </>
-                  )}
-
-                  <td className="border px-3 py-1">
+                  {tipe !== "Siswa" && <td>{x.alamat}</td>}
+                  <td>{x.nomorhp}</td>
+                  <td>
                     <button
-                      onClick={() => handleDelete(item.id)}
+                      onClick={() => hapusData(x.id)}
                       className="bg-red-500 text-white px-2 py-1 rounded"
                     >
                       Hapus
@@ -177,101 +113,60 @@ const Database = () => {
             )}
           </tbody>
         </table>
-
-        <form onSubmit={handleSubmit} className="bg-white shadow-lg rounded-2xl p-6 w-full max-w-md">
-          <h2 className="text-2xl font-bold mb-4 text-center text-blue-600">
-            Tambah Data {tipe}
-          </h2>
+        <form
+          onSubmit={tambahData}
+          className="max-w-md mx-auto bg-white p-4 rounded shadow"
+        >
+          <h2 className="text-xl font-bold mb-2">Tambah Data {tipe}</h2>
 
           <input
-            type="text"
-            placeholder="Masukkan Nama"
+            placeholder="Nama"
             value={form.nama}
             onChange={(e) => setForm({ ...form, nama: e.target.value })}
-            className="border w-full mb-2 p-2 rounded"
+            className="border w-full p-2 mb-2 rounded"
             required
           />
 
           {tipe === "Siswa" && (
             <>
               <input
-                type="text"
-                placeholder="Masukkan Kelas"
+                placeholder="Kelas"
                 value={form.kelas}
                 onChange={(e) => setForm({ ...form, kelas: e.target.value })}
-                className="border w-full mb-2 p-2 rounded"
+                className="border w-full p-2 mb-2 rounded"
                 required
               />
               <input
-                type="text"
-                placeholder="Masukkan Jurusan"
+                placeholder="Jurusan"
                 value={form.jurusan}
                 onChange={(e) => setForm({ ...form, jurusan: e.target.value })}
-                className="border w-full mb-2 p-2 rounded"
-                required
-              />
-              <input
-                type="text"
-                placeholder="Masukkan Alamat"
-                value={form.alamat}
-                onChange={(e) => setForm({ ...form, alamat: e.target.value })}
-                className="border w-full mb-2 p-2 rounded"
-                required
-                />
-              <input
-                type="number"
-                placeholder="Masukkan Nomor HP"
-                value={form.nomorhp}
-                onChange={handleNoHpChange}
-                className="border w-full mb-2 p-2 rounded"
+                className="border w-full p-2 mb-2 rounded"
                 required
               />
             </>
           )}
 
-          {tipe === "Guru" && (
-            <>
+          {tipe !== "Siswa" && (
             <input
-              type="text"
-              placeholder="Masukkan Alamat"
+              placeholder="Alamat"
               value={form.alamat}
               onChange={(e) => setForm({ ...form, alamat: e.target.value })}
-              className="border w-full mb-2 p-2 rounded"
+              className="border w-full p-2 mb-2 rounded"
               required
             />
-            <input
-              type="number"
-              placeholder="Masukkan Nomor HP"
-              value={form.nomorhp}
-              onChange={handleNoHpChange}
-              className="border w-full mb-2 p-2 rounded"
-              required
-            />
-           </>
           )}
 
-          {tipe === "Karyawan" && (
-            <>
-            <input
-              type="number"
-              placeholder="Masukkan Nomor HP"
-              value={form.nomorhp}
-              onChange={handleNoHpChange}
-              className="border w-full mb-2 p-2 rounded"
-              required
-            />
-            <input
-              type="text"
-              placeholder="Masukkan Alamat"
-              value={form.alamat}
-              onChange={(e) => setForm({ ...form, alamat: e.target.value })}
-              className="border w-full mb-2 p-2 rounded"
-              required
-            />
-            </>
-          )}
+          <input
+            placeholder="Nomor HP"
+            value={form.nomorhp}
+            onChange={(e) =>
+              setForm({ ...form, nomorhp: e.target.value.replace(/\D/g, "") })
+            }
+            className="border w-full p-2 mb-2 rounded"
+            required
+          />
 
-          <button type="submit" className="bg-blue-600 text-white w-full py-2 rounded hover:bg-blue-700">
+          <button className="bg-blue-600 text-white w-full py-2 rounded">
             Tambah
           </button>
         </form>

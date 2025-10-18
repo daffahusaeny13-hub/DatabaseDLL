@@ -12,9 +12,9 @@ function App() {
       <Routes>
         <Route path="/t" element={<Database />} />
         <Route path="/d" element={<Dashboard />} />
-        <Route path="/login" element={<Login />} />
+        <Route path="/" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/" element={<Sidnav/>} />
+        <Route path="/s" element={<Sidnav/>} />
       </Routes>
     </Router>
   );

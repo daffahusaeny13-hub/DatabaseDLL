@@ -10,7 +10,7 @@ function Login() {
   };
 
   return (
-    <div className="flex items-center justify-center bg-sky-500 min-h-screen">
+    <div className="bg-gray-500 flex items-center justify-center min-h-screen">
       <form
         onSubmit={handleSubmit}
         className="bg-white p-6 rounded-lg flex flex-col gap-4"
@@ -29,12 +29,12 @@ function Login() {
         />
         <button
           type="submit"
-          className="bg-green-600 text-white rounded py-2 hover:bg-green-700"
+          className="bg-blue-600 text-white rounded py-2 hover:bg-green-700"
         >
           Login
         </button>
         <p className="text-sm text-center mt-2">
-          Belum punya akun?{" "}
+          Belum punya akun?
           <span
             onClick={() => navigate("/register")}
             className="text-blue-500 cursor-pointer hover:underline"
