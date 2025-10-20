@@ -1,27 +1,53 @@
 {
   "guru": [
     {
-      "id": "5cf7",
-      "nama": "33233",
-      "alamat": "332323",
-      "nomorhp": "3332323"
+      "id": "f35f",
+      "nama": "Fadill",
+      "alamat": "Bringin",
+      "nomorhp": "08777777"
+    },
+    {
+      "id": "abab",
+      "nama": "MaharDika",
+      "alamat": "Bringin",
+      "nomorhp": "088867786"
     }
   ],
   "siswa": [
     {
-      "id": "7699",
-      "nama": "Moreno ",
-      "kelas": "X",
+      "id": "2bdb",
+      "nama": "Moreno",
+      "kelas": "11",
       "jurusan": "TKJ",
-      "nomorhp": "083877290876"
+      "nomorhp": "089787878768"
+    },
+    {
+      "id": "f7d7",
+      "nama": "Andre",
+      "kelas": "11",
+      "jurusan": "TKJ",
+      "nomorhp": "08888888"
+    },
+    {
+      "id": "8044",
+      "nama": "Ayyas",
+      "kelas": "11",
+      "jurusan": "TKJ",
+      "nomorhp": "088888888"
     }
   ],
   "karyawan": [
     {
-      "id": "d605",
-      "nama": "3213213",
-      "alamat": "23232323",
-      "nomorhp": "323232323"
+      "id": "baf3",
+      "nama": "Nugraha",
+      "alamat": "Ngaliyan",
+      "nomorhp": "0872424234"
+    },
+    {
+      "id": "8294",
+      "nama": "Nama",
+      "alamat": "Alamat",
+      "nomorhp": "08675756"
     }
   ]
 }

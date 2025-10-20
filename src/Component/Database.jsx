@@ -5,61 +5,101 @@ import Sidnav from "./Sidnav";
 const Database = () => {
   const [tipe, setTipe] = useState("Siswa");
   const [data, setData] = useState([]);
-  const [form, setForm] = useState({ nama: "", kelas: "", jurusan: "", alamat: "", nomorhp: "", });
-  const API = "http://localhost:5174";
-
-  useEffect(() => {
-    ambilData();
-  }, [tipe]);
+  const [form, setForm] = useState({ nama: "", kelas: "", jurusan: "", alamat: "", nomorhp: "" });
+  const API = "http://localhost:5000";
 
   const ambilData = async () => {
     try {
       const res = await fetch(`${API}/${tipe.toLowerCase()}`);
       const result = await res.json();
       setData(result);
+      localStorage.setItem(`data${tipe}`, JSON.stringify(result));
+      window.dispatchEvent(new Event("storage"));
     } catch (err) {
       console.error("Gagal ambil data:", err);
     }
   };
+
+  useEffect(() => {
+    ambilData();
+  }, [tipe]);
 
   const tambahData = async (e) => {
     e.preventDefault();
 
     const baru =
       tipe === "Siswa"
-        ? { nama: form.nama, kelas: form.kelas, jurusan: form.jurusan, nomorhp: form.nomorhp, }
-        : { nama: form.nama, alamat: form.alamat, nomorhp: form.nomorhp, };
+        ? { nama: form.nama, kelas: form.kelas, jurusan: form.jurusan, nomorhp: form.nomorhp }
+        : { nama: form.nama, alamat: form.alamat, nomorhp: form.nomorhp };
 
-    await fetch(`${API}/${tipe.toLowerCase()}`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(baru),
-    });
+    try {
+      await fetch(`${API}/${tipe.toLowerCase()}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(baru),
+      });
 
-    Swal.fire("Berhasil!", `Data ${tipe} ditambah.`, "success");
-    setForm({ nama: "", kelas: "", jurusan: "", alamat: "", nomorhp: "" });
-    ambilData();
+      Swal.fire({
+        title: "Berhasil!",
+        text: `Data ${tipe} berhasil ditambahkan.`,
+        icon: "success",
+        confirmButtonColor: "#3085d6",
+        confirmButtonText: "Oke",
+      });
+
+      setForm({ nama: "", kelas: "", jurusan: "", alamat: "", nomorhp: "" });
+      ambilData();
+    } catch (err) {
+      console.error(err);
+      Swal.fire({
+        title: "Gagal!",
+        text: `Data ${tipe} tidak bisa ditambahkan.`,
+        icon: "error",
+        confirmButtonColor: "#d33",
+        confirmButtonText: "Oke",
+      });
+    }
   };
 
   const hapusData = async (id) => {
-    await fetch(`${API}/${tipe.toLowerCase()}/${id}`, { method: "DELETE" });
-    Swal.fire("Terhapus!", "Data berhasil dihapus.", "success");
-    ambilData();
+    try {
+      const res = await fetch(`${API}/${tipe.toLowerCase()}/${id}`, { method: "DELETE" });
+      if (!res.ok) throw new Error("Gagal hapus data");
+
+      Swal.fire({
+        title: "Terhapus!",
+        text: "Data berhasil dihapus.",
+        icon: "success",
+        confirmButtonColor: "#3085d6",
+        confirmButtonText: "Oke",
+      });
+
+      setData((prev) => prev.filter((item) => item.id !== id));
+    } catch (err) {
+      console.error(err);
+      Swal.fire({
+        title: "Gagal!",
+        text: "Data tidak bisa dihapus.",
+        icon: "error",
+        confirmButtonColor: "#d33",
+        confirmButtonText: "Oke",
+      });
+    }
   };
 
   return (
-    <div className="flex min-h-screen bg-gray-100">
+    <div className="flex min-h-screen bg-sky-300">
       <Sidnav />
 
       <div className="flex-1 py-10 px-4 ml-60 text-center">
-        <h1 className="text-3xl font-bold text-blue-600 mb-4">Database {tipe}</h1>
+        <h1 className="text-3xl font-bold text-blue-600 mb-4">Database</h1>
 
         <select
           value={tipe}
           onChange={(e) => setTipe(e.target.value)}
-          className="border p-2 rounded mb-4"
+          className="border p-2 rounded mb-4 focus:bg-sky-300"
         >
-          <option>Siswa</option>
+          <option>Siswa</option> 
           <option>Guru</option>
           <option>Karyawan</option>
         </select>
@@ -113,6 +153,7 @@ const Database = () => {
             )}
           </tbody>
         </table>
+
         <form
           onSubmit={tambahData}
           className="max-w-md mx-auto bg-white p-4 rounded shadow"

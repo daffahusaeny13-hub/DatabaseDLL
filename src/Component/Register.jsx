@@ -10,7 +10,7 @@ function Register() {
   };
 
   return (
-    <div className="bg-gray-500 flex items-center justify-center min-h-screen">
+    <div className="bg-sky-300 flex items-center justify-center min-h-screen">
       <form
         onSubmit={handleSubmit}
         className="bg-white p-6 rounded-lg flex flex-col gap-4"
